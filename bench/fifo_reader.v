@@ -18,20 +18,17 @@ module fifo_fwft_reader
       real 		 randval;
       
       begin
-	 rden <= 1'b0;
+	 rden = 1'b0;
 	 rd = 1'b0;
-	 while(!rd) begin
-	    if(empty) rd = 0;
-	    else begin
-	       randval = $dist_uniform(seed, 0, 1000) / 1000.0;
-	       rd = (randval <= rate);
-	    end
-	    if(rd) begin
-	       rden <= 1'b1;
-	    end
+	 while(empty | !rden) begin
+	    randval = $dist_uniform(seed, 0, 1000) / 1000.0;
+	    rd = (randval <= rate);
+
+	    rden <= rd;
+
 	    @(posedge clk);
 	    data_o = din;
-	 end // while (!rd)
+	 end
 	 rden <= 1'b0;
       end
    endtask
@@ -51,6 +48,7 @@ module fifo_fwft_reader
 	 index = 0;
 	 while(index < length_i) begin
 	    read_word(word);
+	    //$display("%0d : Read word 0x%8x", $time, word);
 	    data_o[index*WIDTH+:WIDTH] = word;
 	    index = index + 1;
 	 end // while (index < length_i)
