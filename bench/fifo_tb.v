@@ -37,7 +37,7 @@ module fifo_tb;
    fifo_writer
      #(.WIDTH (dw),
        .MAX_BLOCK_SIZE (FIFO_MAX_BLOCK_SIZE))
-   fifo_writer0
+   writer
      (.clk (clk),
       .dout (wr_data),
       .wren (wr_en),
@@ -60,12 +60,19 @@ module fifo_tb;
    reg [dw*FIFO_MAX_BLOCK_SIZE-1:0] wr_data_block;
    reg [dw*FIFO_MAX_BLOCK_SIZE-1:0] rd_data_block;
    integer 			    length;
+
+   real 			    write_rate;
    
    //Stimuli writer
    initial begin
       @(negedge rst);
       @(posedge clk);
 
+      if($value$plusargs("write_rate=%f", write_rate)) begin
+	 $display("Setting FIFO write rate to %0f", write_rate);
+	 writer.rate=write_rate;
+      end
+      
       for(i=0 ; i<FIFO_MAX_BLOCK_SIZE ; i=i+1) begin
 	 tmp = $random(seed);
 	 wr_data_block[dw*i+:dw] = tmp[dw-1:0];
@@ -73,7 +80,7 @@ module fifo_tb;
 
       length = FIFO_MAX_BLOCK_SIZE;
 
-      fifo_writer0.write_block(wr_data_block, length);
+      writer.write_block(wr_data_block, length);
       $display("Done sending data");
    end
 //FIXME : fork/join?

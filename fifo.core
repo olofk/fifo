@@ -15,5 +15,8 @@ tb_src_files =
 tb_private_src_files =
  bench/fifo_tb.v
 
+[plusargs]
+write_rate = str FIFO write rate
+
 [simulator]
 toplevel = fifo_tb
