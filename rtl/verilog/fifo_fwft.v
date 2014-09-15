@@ -56,7 +56,7 @@ module fifo_fwft
       else
         begin
 	   inc_cnt = wr_en & !full;
-	   dec_cnt = rd_en & !empty;
+	   dec_cnt = fifo_rd_en & !fifo_empty;
 
 	   if(inc_cnt & !dec_cnt)
 	     cnt <= cnt + 1;
