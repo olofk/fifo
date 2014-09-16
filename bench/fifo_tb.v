@@ -46,7 +46,7 @@ module fifo_tb;
    fifo_fwft_reader
      #(.WIDTH (dw),
        .MAX_BLOCK_SIZE (FIFO_MAX_BLOCK_SIZE))
-   fifo_reader0
+   reader
      (.clk (clk),
       .din  (rd_data),
       .rden (rd_en),
@@ -90,7 +90,8 @@ module fifo_tb;
       @(posedge clk);
 
       length = FIFO_MAX_BLOCK_SIZE;
-      fifo_reader0.read_block(rd_data_block, length);
+      reader.read_block(rd_data_block, length);
+      verify(wr_data_block, rd_data_block);
       if(wr_data_block == rd_data_block)
 	$display("Success");
       else
@@ -99,4 +100,24 @@ module fifo_tb;
       
    end
 
+   task verify;
+      input [dw*FIFO_MAX_BLOCK_SIZE-1:0] expected_i;
+      input [dw*FIFO_MAX_BLOCK_SIZE-1:0] received_i;
+
+      integer 				 idx;
+      reg [dw-1:0] 			 expected;
+      reg [dw-1:0] 			 received;
+      
+      begin
+	 for(idx=0 ; idx<FIFO_MAX_BLOCK_SIZE ; idx=idx+1) begin
+	    expected = expected_i[dw*idx+:dw];
+	    received = received_i[dw*idx+:dw];
+	    if(expected !==
+	       received) begin
+	       $display("Error at index %0d. Expected 0x%4x, got 0x%4x", idx, expected, received);
+	       //err = 1'b1;
+	    end //else $display("0x%8x : 0x%8x", start_addr_i+idx*WSB, received);
+	 end
+      end
+   endtask
 endmodule
