@@ -21,20 +21,24 @@ module fifo_writer
       reg 		wr;
       real 		randval;
       begin
-	 wren <= 1'b0;
+	 wren = 1'b0;
+
+	 randval = $dist_uniform(seed, 0, 1000) / 1000.0;
+	 wr = (randval <= rate);
+
+	 dout <= word_i;
+
+	 while(!wr) begin
+	    randval = $dist_uniform(seed, 0, 1000) / 1000.0;
+	    wr = (randval <= rate);
+	    @(posedge clk);
+	 end
+	 wren <= 1'b1;
 
 	 wr = 1'b0;
 	 while(!wr) begin
-	    if(full) wr = 0;
-	    else begin
-	       randval = $dist_uniform(seed, 0, 1000) / 1000.0;
-	       wr = (randval <= rate);
-	    end
-	    if(wr) begin
-	       wren <= 1'b1;
-	       dout <= word_i;
-	    end
 	    @(posedge clk);
+	    wr = !full;
 	 end
 	 wren <= 1'b0;
       end
