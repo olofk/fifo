@@ -27,7 +27,7 @@ module fifo_tb;
       .rst (rst),
 
       .din    (wr_data),
-      .wr_en   (wr_en),
+      .wr_en   (wr_en & !full),
       .full    (full),
       
       .dout (rd_data),
@@ -78,6 +78,8 @@ module fifo_tb;
 	 $display("Setting FIFO read rate to %0f", read_rate);
 	 reader.rate=read_rate;
       end
+
+      reader.timeout=10000;
       
       for(i=0 ; i<FIFO_MAX_BLOCK_SIZE ; i=i+1) begin
 	 tmp = $random(seed);
