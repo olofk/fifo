@@ -16,6 +16,7 @@ tb_private_src_files =
  bench/fifo_tb.v
 
 [plusargs]
+read_rate = str FIFO read rate
 write_rate = str FIFO write rate
 
 [simulator]

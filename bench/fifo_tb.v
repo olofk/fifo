@@ -62,6 +62,7 @@ module fifo_tb;
    integer 			    length;
 
    real 			    write_rate;
+   real 			    read_rate;
    
    //Stimuli writer
    initial begin
@@ -71,6 +72,11 @@ module fifo_tb;
       if($value$plusargs("write_rate=%f", write_rate)) begin
 	 $display("Setting FIFO write rate to %0f", write_rate);
 	 writer.rate=write_rate;
+      end
+
+      if($value$plusargs("read_rate=%f", read_rate)) begin
+	 $display("Setting FIFO read rate to %0f", read_rate);
+	 reader.rate=read_rate;
       end
       
       for(i=0 ; i<FIFO_MAX_BLOCK_SIZE ; i=i+1) begin
