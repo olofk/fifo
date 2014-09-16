@@ -36,54 +36,42 @@ module fifo
       if(DEPTH_WIDTH < 1) $error("%m : Error: DEPTH_WIDTH must be > 0");
       if(DATA_WIDTH < 1) $error("%m : Error: DATA_WIDTH must be > 0");
    end
-   
    //synthesis translate_on
-   wire [DATA_WIDTH-1:0] 		fifo_dout;
-   reg [DATA_WIDTH-1:0] 		fifo_dout_r;
 
    reg [DEPTH_WIDTH-1:0] 		write_pointer;
-   reg [DEPTH_WIDTH-1:0] 		read_pointer;
-   wire [DEPTH_WIDTH-1:0] 		prev_read_pointer;
+   wire [DEPTH_WIDTH-1:0] 		read_pointer;
+   reg [DEPTH_WIDTH-1:0] 		prev_read_pointer;
 
-   reg 					read_r;
 
-   assign rd_data_o = read_r ? fifo_dout : fifo_dout_r;
-
-   assign prev_read_pointer = read_pointer - 1;
+   assign read_pointer = prev_read_pointer + 1;
 
    assign full_o = write_pointer == prev_read_pointer;
    assign empty_o = write_pointer == read_pointer;
 
-   // TODO: add read enable to RAM?
    always @(posedge clk) begin
-      read_r <= rd_en_i;
-
-      if (read_r)
-	fifo_dout_r <= fifo_dout;
-
       if (wr_en_i)
 	write_pointer <= write_pointer + 1;
 
       if (rd_en_i)
-	read_pointer <= read_pointer + 1;
+	prev_read_pointer <= read_pointer;
 
       if (rst) begin
-	 read_pointer <= 0;
+	 prev_read_pointer <= 2**DEPTH_WIDTH-1;
 	 write_pointer <= 0;
       end
    end
-
    simple_dpram_sclk
      #(
        .ADDR_WIDTH(DEPTH_WIDTH),
        .DATA_WIDTH(DATA_WIDTH),
-       .ENABLE_BYPASS("FALSE")
+       .ENABLE_BYPASS(1)
        )
    fifo_ram
      (
       .clk			(clk),
-      .dout			(fifo_dout),
+      .dout			(rd_data_o),
       .raddr			(read_pointer),
+      .re			(rd_en_i),
       .waddr			(write_pointer),
       .we			(wr_en_i),
       .din			(wr_data_i)
