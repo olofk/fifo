@@ -38,25 +38,26 @@ module fifo
    end
    //synthesis translate_on
 
-   reg [DEPTH_WIDTH-1:0] 		write_pointer;
-   wire [DEPTH_WIDTH-1:0] 		read_pointer;
-   reg [DEPTH_WIDTH-1:0] 		prev_read_pointer;
+   reg [DEPTH_WIDTH:0] write_pointer;
+   reg [DEPTH_WIDTH:0] read_pointer;
 
-
-   assign read_pointer = prev_read_pointer + 1;
-
-   assign full_o = write_pointer == prev_read_pointer;
-   assign empty_o = write_pointer == read_pointer;
-
+   wire 	       empty_int = (write_pointer[DEPTH_WIDTH] ==
+				    read_pointer[DEPTH_WIDTH]);
+   wire 	       full_or_empty = (write_pointer[DEPTH_WIDTH-1:0] ==
+					read_pointer[DEPTH_WIDTH-1:0]);
+   
+   assign full_o  = full_or_empty & !empty_int;
+   assign empty_o = full_or_empty & empty_int;
+   
    always @(posedge clk) begin
       if (wr_en_i)
 	write_pointer <= write_pointer + 1;
 
       if (rd_en_i)
-	prev_read_pointer <= read_pointer;
+	read_pointer <= read_pointer + 1;
 
       if (rst) begin
-	 prev_read_pointer <= 2**DEPTH_WIDTH-1;
+	 read_pointer  <= 0;
 	 write_pointer <= 0;
       end
    end
@@ -70,9 +71,9 @@ module fifo
      (
       .clk			(clk),
       .dout			(rd_data_o),
-      .raddr			(read_pointer),
+      .raddr			(read_pointer[DEPTH_WIDTH-1:0]),
       .re			(rd_en_i),
-      .waddr			(write_pointer),
+      .waddr			(write_pointer[DEPTH_WIDTH-1:0]),
       .we			(wr_en_i),
       .din			(wr_data_i)
       );
