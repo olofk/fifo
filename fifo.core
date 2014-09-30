@@ -9,6 +9,7 @@ src_files =
  rtl/verilog/simple_dpram_sclk.v
  rtl/verilog/fifo.v
  rtl/verilog/fifo_fwft.v
+ rtl/verilog/dual_clock_fifo.v
 tb_src_files =
  bench/fifo_reader.v
  bench/fifo_writer.v
