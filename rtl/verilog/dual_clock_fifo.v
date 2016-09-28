@@ -67,8 +67,8 @@ always @(posedge wr_clk_i) begin
 		wr_addr <= 0;
 		wr_addr_gray <= 0;
 	end else if (wr_en_i) begin
-		wr_addr <= wr_addr + 1;
-		wr_addr_gray <= gray_conv(wr_addr + 1);
+		wr_addr <= wr_addr + 1'b1;
+		wr_addr_gray <= gray_conv(wr_addr + 1'b1);
 	end
 end
 
@@ -84,7 +84,7 @@ always @(posedge wr_clk_i)
 	else if (wr_en_i)
 		full_o <= gray_conv(wr_addr + 2) == rd_addr_gray_wr_r;
 	else
-		full_o <= full_o & (gray_conv(wr_addr + 1) == rd_addr_gray_wr_r);
+		full_o <= full_o & (gray_conv(wr_addr + 1'b1) == rd_addr_gray_wr_r);
 
 always @(posedge rd_clk_i) begin
 	if (rd_rst_i) begin

@@ -51,10 +51,10 @@ module fifo
    
    always @(posedge clk) begin
       if (wr_en_i)
-	write_pointer <= write_pointer + 1;
+	write_pointer <= write_pointer + 1'd1;
 
       if (rd_en_i)
-	read_pointer <= read_pointer + 1;
+	read_pointer <= read_pointer + 1'd1;
 
       if (rst) begin
 	 read_pointer  <= 0;
