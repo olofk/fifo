@@ -9,8 +9,7 @@ module fifo_fwft
     output 			 full,
     output [DATA_WIDTH-1:0] 	 dout,
     input 			 rd_en,
-    output 			 empty,
-    output reg [DEPTH_WIDTH-1:0] cnt);
+    output 			 empty);
 
    wire [DATA_WIDTH-1:0] 	 fifo_dout;
    wire 			 fifo_empty;
