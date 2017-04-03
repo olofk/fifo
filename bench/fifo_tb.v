@@ -1,5 +1,6 @@
-module fifo_tb;
-   localparam aw = 32;
+module fifo_tb
+  #(parameter depth_width = 4);
+
    localparam dw = 16;
    localparam FIFO_MAX_BLOCK_SIZE = 128;
    
@@ -20,7 +21,7 @@ module fifo_tb;
    wire 	 empty;
    
    fifo_fwft
-     #(.DEPTH_WIDTH (4),
+     #(.DEPTH_WIDTH (depth_width),
        .DATA_WIDTH  (dw))
    dut
      (.clk (clk),

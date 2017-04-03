@@ -2,7 +2,7 @@ CAPI=1
 [main]
 name = fifo-1.1
 description = Generic FIFO
-simulators = icarus modelsim
+simulators = icarus isim modelsim
 depend = >=vlog_tb_utils-1.1
 
 [fileset rtl]
@@ -42,6 +42,12 @@ scope       = private
 datatype    = str
 description = FIFO write rate
 paramtype   = plusarg
+scope       = private
+
+[parameter depth_width]
+datatype    = int
+description = 2**(FIFO depth)
+paramtype   = vlogparam
 scope       = private
 
 [simulator]
