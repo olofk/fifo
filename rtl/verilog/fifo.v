@@ -31,20 +31,22 @@ module fifo
     output 		    empty_o
     );
 
-   //synthesis translate_off
+   localparam DW = (DATA_WIDTH  < 1) ? 1 : DATA_WIDTH;
+   localparam AW = (DEPTH_WIDTH < 1) ? 1 : DEPTH_WIDTH;
+
    initial begin
-      if(DEPTH_WIDTH < 1) $error("%m : Error: DEPTH_WIDTH must be > 0");
-      if(DATA_WIDTH < 1) $error("%m : Error: DATA_WIDTH must be > 0");
+      if(DEPTH_WIDTH < 1) $display("%m : Warning: DEPTH_WIDTH must be > 0. Setting minimum value (1)");
+      if(DATA_WIDTH < 1) $display("%m : Warning: DATA_WIDTH must be > 0. Setting minimum value (1)");
    end
    //synthesis translate_on
 
-   reg [DEPTH_WIDTH:0] write_pointer;
-   reg [DEPTH_WIDTH:0] read_pointer;
+   reg [AW:0] write_pointer;
+   reg [AW:0] read_pointer;
 
-   wire 	       empty_int = (write_pointer[DEPTH_WIDTH] ==
-				    read_pointer[DEPTH_WIDTH]);
-   wire 	       full_or_empty = (write_pointer[DEPTH_WIDTH-1:0] ==
-					read_pointer[DEPTH_WIDTH-1:0]);
+   wire 	       empty_int = (write_pointer[AW] ==
+				    read_pointer[AW]);
+   wire 	       full_or_empty = (write_pointer[AW-1:0] ==
+					read_pointer[AW-1:0]);
    
    assign full_o  = full_or_empty & !empty_int;
    assign empty_o = full_or_empty & empty_int;
@@ -63,17 +65,17 @@ module fifo
    end
    simple_dpram_sclk
      #(
-       .ADDR_WIDTH(DEPTH_WIDTH),
-       .DATA_WIDTH(DATA_WIDTH),
+       .ADDR_WIDTH(AW),
+       .DATA_WIDTH(DW),
        .ENABLE_BYPASS(1)
        )
    fifo_ram
      (
       .clk			(clk),
       .dout			(rd_data_o),
-      .raddr			(read_pointer[DEPTH_WIDTH-1:0]),
+      .raddr			(read_pointer[AW-1:0]),
       .re			(rd_en_i),
-      .waddr			(write_pointer[DEPTH_WIDTH-1:0]),
+      .waddr			(write_pointer[AW-1:0]),
       .we			(wr_en_i),
       .din			(wr_data_i)
       );
