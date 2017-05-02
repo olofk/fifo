@@ -1,6 +1,6 @@
 CAPI=1
 [main]
-name = fifo-1.2
+name = fifo-1.2.1
 description = Generic FIFO
 simulators = icarus isim modelsim
 depend = >=vlog_tb_utils-1.1
