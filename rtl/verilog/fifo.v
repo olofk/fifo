@@ -34,6 +34,7 @@ module fifo
    localparam DW = (DATA_WIDTH  < 1) ? 1 : DATA_WIDTH;
    localparam AW = (DEPTH_WIDTH < 1) ? 1 : DEPTH_WIDTH;
 
+   //synthesis translate_off
    initial begin
       if(DEPTH_WIDTH < 1) $display("%m : Warning: DEPTH_WIDTH must be > 0. Setting minimum value (1)");
       if(DATA_WIDTH < 1) $display("%m : Warning: DATA_WIDTH must be > 0. Setting minimum value (1)");
