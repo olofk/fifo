@@ -16,7 +16,7 @@ file_type = verilogSource
 
 [fileset bfm]
 files =
- bench/fifo_reader.v
+ bench/fifo_fwft_reader.v
  bench/fifo_writer.v
 file_type = verilogSource
 usage = sim
