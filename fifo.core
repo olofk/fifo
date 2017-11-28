@@ -16,6 +16,7 @@ file_type = verilogSource
 
 [fileset bfm]
 files =
+ bench/fifo_reader.v
  bench/fifo_fwft_reader.v
  bench/fifo_writer.v
 file_type = verilogSource
@@ -23,6 +24,8 @@ usage = sim
 
 [fileset tb]
 files =
+ bench/fifo_tester.v
+ bench/dual_clock_fifo_tb.v
  bench/fifo_tb.v
 file_type = verilogSource
 scope = private
@@ -42,6 +45,12 @@ scope       = private
 datatype    = str
 description = FIFO write rate
 paramtype   = plusarg
+scope       = private
+
+[parameter data_width]
+datatype    = int
+description = FIFO data width
+paramtype   = vlogparam
 scope       = private
 
 [parameter depth_width]
