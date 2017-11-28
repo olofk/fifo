@@ -1,0 +1,39 @@
+CAPI=1
+[main]
+name = ::xilinx_fifoe1:1.2.1
+description = Xilinx FIFOE1 wrapper
+simulators = xsim
+depend = >=vlog_tb_utils-1.1
+
+[fileset rtl]
+files = rtl/verilog/xilinx_fifoe1.v[file_type=verilogSource]
+usage = sim vivado
+
+[fileset bfm]
+files =
+ bench/fifo_reader.v
+ bench/fifo_fwft_reader.v
+ bench/fifo_writer.v
+file_type = verilogSource
+usage = sim
+
+[fileset tb]
+files =
+ $XILINX_VIVADO/data/verilog/src/glbl.v
+ bench/fifo_tester.v
+ bench/xilinx_fifoe1_tb.v
+file_type=verilogSource
+scope = private
+usage = xsim
+
+[parameter data_width]
+datatype    = int
+description = FIFO data width
+paramtype   = vlogparam
+scope       = private
+
+[simulator]
+toplevel = xilinx_fifoe1_tb glbl
+
+[xsim]
+xsim_options = -L unisims_ver

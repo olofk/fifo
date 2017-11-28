@@ -28,6 +28,11 @@ A generic asynchronous FIFO
 
 A generic Dual Port RAM used as backend in fifo.v
 
+### rtl/verilog/xilinx_fifoe1.v
+
+Wrapper with proper reset handling for the FIFOE1 macros found in some Xilinx
+FPGA families such as Virtex-5, Virtex-6 and all 7-series devices.
+
 ### data/fifo.sdc
 
 Timing constraints file for Quartus with rules for the dual clock FIFO.
@@ -58,3 +63,9 @@ Add the FIFO library to your FuseSoC library path and run
 ### FIFO
 
 `fusesoc sim --testbench=fifo_tb fifo`
+
+### Xilinx FIFOE1
+
+`fusesoc sim xilinx_fifoe1`
+
+Note that this testbench requires the `$XILINX_VIVADO` environment variable to be set and only runs on XSim bundled with Vivado
