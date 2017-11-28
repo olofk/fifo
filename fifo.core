@@ -27,6 +27,7 @@ files =
  bench/fifo_tester.v
  bench/dual_clock_fifo_tb.v
  bench/fifo_fwft_tb.v
+ bench/fifo_tb.v
 file_type = verilogSource
 scope = private
 usage = sim
