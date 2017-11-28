@@ -1,4 +1,4 @@
-module fifo_tb
+module fifo_fwft_tb
   #(parameter depth_width = 4);
 
    localparam dw = 16;
