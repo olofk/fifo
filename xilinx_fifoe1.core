@@ -1,6 +1,6 @@
 CAPI=1
 [main]
-name = ::xilinx_fifoe1:1.2.1
+name = ::xilinx_fifoe1:1.3
 description = Xilinx FIFOE1 wrapper
 simulators = xsim
 depend = >=vlog_tb_utils-1.1
