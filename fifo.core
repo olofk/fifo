@@ -1,64 +1,81 @@
-CAPI=1
-[main]
-name = ::fifo:1.3
-description = Generic FIFO
-simulators = icarus isim modelsim
-depend = >=vlog_tb_utils-1.1
+CAPI=2:
 
-[fileset rtl]
-files =
- rtl/verilog/simple_dpram_sclk.v
- rtl/verilog/fifo.v
- rtl/verilog/fifo_fwft_adapter.v
- rtl/verilog/fifo_fwft.v
- rtl/verilog/dual_clock_fifo.v
-file_type = verilogSource
+name : ::fifo:1.3
+description : Generic FIFO
 
-[fileset bfm]
-files =
- bench/fifo_reader.v
- bench/fifo_fwft_reader.v
- bench/fifo_writer.v
-file_type = verilogSource
-usage = sim
+filesets:
+  rtl:
+    files:
+      - rtl/verilog/simple_dpram_sclk.v
+      - rtl/verilog/fifo.v
+      - rtl/verilog/fifo_fwft_adapter.v
+      - rtl/verilog/fifo_fwft.v
+      - rtl/verilog/dual_clock_fifo.v
+    file_type : verilogSource
 
-[fileset tb]
-files =
- bench/fifo_tester.v
- bench/dual_clock_fifo_tb.v
- bench/fifo_fwft_tb.v
- bench/fifo_tb.v
-file_type = verilogSource
-scope = private
-usage = sim
+  bfm:
+    files:
+      - bench/fifo_reader.v
+      - bench/fifo_fwft_reader.v
+      - bench/fifo_writer.v
+    file_type : verilogSource
 
-[fileset constraints]
-files = data/fifo.sdc[file_type=SDC]
-usage = quartus
+  tb:
+    files:
+      - bench/fifo_tester.v
+      - bench/dual_clock_fifo_tb.v
+      - bench/fifo_fwft_tb.v
+      - bench/fifo_tb.v
+    file_type : verilogSource
+    depend : [">=::vlog_tb_utils:1.1"]
 
-[parameter read_rate]
-datatype    = str
-description = FIFO read rate
-paramtype   = plusarg
-scope       = private
+  constraints:
+    files :
+      "tool_quartus? (data/fifo.sdc)" : {file_type : SDC}
 
-[parameter write_rate]
-datatype    = str
-description = FIFO write rate
-paramtype   = plusarg
-scope       = private
+parameters:
+  read_rate:
+    datatype    : str
+    description : FIFO read rate
+    paramtype   : plusarg
 
-[parameter data_width]
-datatype    = int
-description = FIFO data width
-paramtype   = vlogparam
-scope       = private
+  write_rate:
+    datatype    : str
+    description : FIFO write rate
+    paramtype   : plusarg
 
-[parameter depth_width]
-datatype    = int
-description = 2**(FIFO depth)
-paramtype   = vlogparam
-scope       = private
+  data_width:
+    datatype    : int
+    description : FIFO data width
+    paramtype   : vlogparam
 
-[simulator]
-toplevel = fifo_fwft_tb
+  depth_width:
+    datatype    : int
+    description : 2**(FIFO depth)
+    paramtype   : vlogparam
+
+targets:
+  default:
+    filesets :
+      - rtl
+      - constraints
+      - "tool_icarus? (bfm)"
+      - "tool_isim? (bfm)"
+      - "tool_modelsim? (bfm)"
+  fifo_fwft_tb: &sim
+    default_tool : icarus
+    description : Testbench for First Word Fall Through FIFO
+    filesets : [rtl, bfm, tb]
+    parameters : [read_rate, write_rate, data_width, depth_width]
+    toplevel : fifo_fwft_tb
+
+  dual_clock_fifo_tb:
+    << : *sim
+    description : Testbench for dual clock FIFO
+    toplevel : dual_clock_fifo_tb
+
+  fifo_tb:
+    << : *sim
+    description : Testbench single clock FIFO
+    toplevel : fifo_tb
+
